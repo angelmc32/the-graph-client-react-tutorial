@@ -15,10 +15,10 @@ const baseDir = pathModule.join(pathModule.dirname(fileURLToPath(import.meta.url
 const importFn = (moduleId) => {
     const relativeModuleId = (pathModule.isAbsolute(moduleId) ? pathModule.relative(baseDir, moduleId) : moduleId).split('\\').join('/').replace(baseDir + '/', '');
     switch (relativeModuleId) {
-        case ".graphclient/sources/compoundv2/introspectionSchema.js":
-            return import("./sources/compoundv2/introspectionSchema.js");
-        case ".graphclient/sources/uniswapv2/introspectionSchema.js":
-            return import("./sources/uniswapv2/introspectionSchema.js");
+        case ".graphclient/sources/usdc/introspectionSchema.js":
+            return import("./sources/usdc/introspectionSchema.js");
+        case ".graphclient/sources/ens/introspectionSchema.js":
+            return import("./sources/ens/introspectionSchema.js");
         default:
             return Promise.reject(new Error(`Cannot find module '${relativeModuleId}'.`));
     }
@@ -46,38 +46,38 @@ export async function getMeshOptions() {
     const sources = [];
     const transforms = [];
     const additionalEnvelopPlugins = [];
-    const uniswapv2Transforms = [];
-    const compoundv2Transforms = [];
+    const ensTransforms = [];
+    const usdcTransforms = [];
     const additionalTypeDefs = [];
-    const uniswapv2Handler = new GraphqlHandler({
-        name: "uniswapv2",
-        config: { "endpoint": "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2" },
+    const ensHandler = new GraphqlHandler({
+        name: "ens",
+        config: { "endpoint": "https://api.thegraph.com/subgraphs/name/ensdomains/ens" },
         baseDir,
         cache,
         pubsub,
-        store: sourcesStore.child("uniswapv2"),
-        logger: logger.child("uniswapv2"),
+        store: sourcesStore.child("ens"),
+        logger: logger.child("ens"),
         importFn,
     });
-    const compoundv2Handler = new GraphqlHandler({
-        name: "compoundv2",
-        config: { "endpoint": "https://api.thegraph.com/subgraphs/name/graphprotocol/compound-v2" },
+    const usdcHandler = new GraphqlHandler({
+        name: "usdc",
+        config: { "endpoint": "https://api.thegraph.com/subgraphs/name/centrehq/usdc" },
         baseDir,
         cache,
         pubsub,
-        store: sourcesStore.child("compoundv2"),
-        logger: logger.child("compoundv2"),
+        store: sourcesStore.child("usdc"),
+        logger: logger.child("usdc"),
         importFn,
     });
     sources[0] = {
-        name: 'uniswapv2',
-        handler: uniswapv2Handler,
-        transforms: uniswapv2Transforms
+        name: 'ens',
+        handler: ensHandler,
+        transforms: ensTransforms
     };
     sources[1] = {
-        name: 'compoundv2',
-        handler: compoundv2Handler,
-        transforms: compoundv2Transforms
+        name: 'usdc',
+        handler: usdcHandler,
+        transforms: usdcTransforms
     };
     const additionalResolvers = [];
     const merger = new StitchingMerger({
@@ -99,11 +99,23 @@ export async function getMeshOptions() {
         get documents() {
             return [
                 {
-                    document: ExampleQueryDocument,
+                    document: GetManyDomainsDocument,
                     get rawSDL() {
-                        return printWithCache(ExampleQueryDocument);
+                        return printWithCache(GetManyDomainsDocument);
                     },
-                    location: 'ExampleQueryDocument.graphql'
+                    location: 'GetManyDomainsDocument.graphql'
+                }, {
+                    document: GetDomainByLabelNameDocument,
+                    get rawSDL() {
+                        return printWithCache(GetDomainByLabelNameDocument);
+                    },
+                    location: 'GetDomainByLabelNameDocument.graphql'
+                }, {
+                    document: GetDomainWithSubdomainsDocument,
+                    get rawSDL() {
+                        return printWithCache(GetDomainWithSubdomainsDocument);
+                    },
+                    location: 'GetDomainWithSubdomainsDocument.graphql'
                 }
             ];
         },
@@ -136,32 +148,58 @@ export function getBuiltGraphSDK(globalContext) {
     const sdkRequester$ = getBuiltGraphClient().then(({ sdkRequesterFactory }) => sdkRequesterFactory(globalContext));
     return getSdk((...args) => sdkRequester$.then(sdkRequester => sdkRequester(...args)));
 }
-export const ExampleQueryDocument = gql `
-    query ExampleQuery {
-  markets(first: 7) {
-    borrowRate
-    cash
-    collateralFactor
-  }
-  pair(id: "0x00004ee988665cdda9a1080d5792cecd16dc1220") {
+export const GetManyDomainsDocument = gql `
+    query GetManyDomains {
+  domains(first: 1000) {
     id
-    token0 {
+    name
+    labelName
+    labelhash
+  }
+}
+    `;
+export const GetDomainByLabelNameDocument = gql `
+    query GetDomainByLabelName($labelName: String!) {
+  domains(where: {labelName: $labelName, name: $labelName}) {
+    name
+    labelName
+    subdomainCount
+    id
+    owner {
       id
-      symbol
-      name
     }
-    token1 {
+  }
+}
+    `;
+export const GetDomainWithSubdomainsDocument = gql `
+    query GetDomainWithSubdomains($min: Int!, $max: Int!) {
+  domains(where: {subdomainCount_lte: $min, subdomainCount_gt: $max}) {
+    name
+    labelName
+    subdomainCount
+    subdomains {
+      labelName
+    }
+    id
+    owner {
       id
-      symbol
-      name
+    }
+    registration {
+      cost
     }
   }
 }
     `;
 export function getSdk(requester) {
     return {
-        ExampleQuery(variables, options) {
-            return requester(ExampleQueryDocument, variables, options);
+        GetManyDomains(variables, options) {
+            return requester(GetManyDomainsDocument, variables, options);
+        },
+        GetDomainByLabelName(variables, options) {
+            return requester(GetDomainByLabelNameDocument, variables, options);
+        },
+        GetDomainWithSubdomains(variables, options) {
+            return requester(GetDomainWithSubdomainsDocument, variables, options);
         }
     };
 }

@@ -1,0 +1,38 @@
+query GetManyDomains {
+  domains(first: 1000) {
+    id
+    name
+    labelName
+    labelhash
+  }
+}
+
+query GetDomainByLabelName($labelName: String!) {
+  domains(where: { labelName: $labelName, name: $labelName }) {
+    name
+    labelName
+    subdomainCount
+    id
+    owner {
+      id
+    }
+  }
+}
+
+query GetDomainWithSubdomains($min: Int!, $max: Int!) {
+  domains(where: { subdomainCount_lte: $min, subdomainCount_gt: $max }) {
+    name
+    labelName
+    subdomainCount
+    subdomains {
+      labelName
+    }
+    id
+    owner {
+      id
+    }
+    registration {
+      cost
+    }
+  }
+}

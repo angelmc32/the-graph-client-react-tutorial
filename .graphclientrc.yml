@@ -1,12 +1,12 @@
 sources:
-  - name: uniswapv2
+  - name: ens
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2
-  - name: compoundv2
+        endpoint: https://api.thegraph.com/subgraphs/name/ensdomains/ens
+  - name: usdc
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/graphprotocol/compound-v2
+        endpoint: https://api.thegraph.com/subgraphs/name/centrehq/usdc
 
 documents:
-  - ./src/example-query.graphql
+  - src/graphql/*.graphql
