@@ -4,8 +4,8 @@ import type { GetMeshOptions } from '@graphql-mesh/runtime';
 import type { YamlConfig } from '@graphql-mesh/types';
 import { MeshHTTPHandler } from '@graphql-mesh/http';
 import { ExecuteMeshFn, SubscribeMeshFn, MeshContext as BaseMeshContext, MeshInstance } from '@graphql-mesh/runtime';
-import type { Uniswapv2Types } from './sources/uniswapv2/types';
 import type { EnsTypes } from './sources/ens/types';
+import type { Uniswapv2Types } from './sources/uniswapv2/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {
