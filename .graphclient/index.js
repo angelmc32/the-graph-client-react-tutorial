@@ -4,6 +4,7 @@ import { DefaultLogger } from '@graphql-mesh/utils';
 import MeshCache from "@graphql-mesh/cache-localforage";
 import { fetch as fetchFn } from '@whatwg-node/fetch';
 import GraphqlHandler from "@graphql-mesh/graphql";
+import UsePollingLive from "@graphprotocol/client-polling-live";
 import StitchingMerger from "@graphql-mesh/merger-stitching";
 import { printWithCache } from '@graphql-mesh/utils';
 import { createMeshHTTPHandler } from '@graphql-mesh/http';
@@ -79,6 +80,16 @@ export async function getMeshOptions() {
         handler: uniswapv2Handler,
         transforms: uniswapv2Transforms
     };
+    additionalEnvelopPlugins[0] = await UsePollingLive({
+        ...({
+            "defaultInterval": 5000
+        }),
+        logger: logger.child("pollingLive"),
+        cache,
+        pubsub,
+        baseDir,
+        importFn,
+    });
     const additionalResolvers = [];
     const merger = new StitchingMerger({
         cache,
@@ -197,8 +208,8 @@ export const GetDomainBySubdomainCountDocument = gql `
 }
     `;
 export const GetManySwapsDocument = gql `
-    query GetManySwaps {
-  swaps(orderBy: timestamp, first: 1000, orderDirection: desc) {
+    query GetManySwaps @live {
+  swaps(orderBy: timestamp, first: 15, orderDirection: desc) {
     id
     amountUSD
     pair {

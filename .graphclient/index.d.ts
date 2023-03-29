@@ -6879,7 +6879,7 @@ export declare function getBuiltGraphSDK<TGlobalContext = any, TOperationContext
     }>, options?: TOperationContext): Promise<GetDomainBySubdomainCountQuery>;
     GetManySwaps(variables?: Exact<{
         [key: string]: never;
-    }>, options?: TOperationContext): Promise<GetManySwapsQuery>;
+    }>, options?: TOperationContext): AsyncIterable<GetManySwapsQuery>;
 };
 export type GetManyDomainsQueryVariables = Exact<{
     [key: string]: never;
@@ -6937,6 +6937,6 @@ export declare function getSdk<C, E>(requester: Requester<C, E>): {
     GetManyDomains(variables?: GetManyDomainsQueryVariables, options?: C): Promise<GetManyDomainsQuery>;
     GetDomainByLabelName(variables: GetDomainByLabelNameQueryVariables, options?: C): Promise<GetDomainByLabelNameQuery>;
     GetDomainBySubdomainCount(variables: GetDomainBySubdomainCountQueryVariables, options?: C): Promise<GetDomainBySubdomainCountQuery>;
-    GetManySwaps(variables?: GetManySwapsQueryVariables, options?: C): Promise<GetManySwapsQuery>;
+    GetManySwaps(variables?: GetManySwapsQueryVariables, options?: C): AsyncIterable<GetManySwapsQuery>;
 };
 export type Sdk = ReturnType<typeof getSdk>;

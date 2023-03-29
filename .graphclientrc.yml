@@ -8,5 +8,9 @@ sources:
       graphql:
         endpoint: https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2
 
+plugins:
+  - pollingLive:
+      defaultInterval: 5000
+
 documents:
   - src/graphql/*.graphql

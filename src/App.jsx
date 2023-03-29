@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import usePollingLive from "@graphprotocol/client-polling-live";
 import {
   GetManySwapsDocument,
   GetManyDomainsDocument,
   GetDomainByLabelNameDocument,
   GetDomainBySubdomainCountDocument,
+  getMeshOptions,
   execute,
+  subscribe,
 } from "../.graphclient/index";
 import "./App.css";
 import Navbar from "./components/Navbar";
@@ -15,12 +18,89 @@ function App() {
 
   const [domains, setDomains] = useState([]);
 
+  // onExecute({
+  //   args: { document: GetManySwapsDocument },
+  //   executeFn: execute(GetManySwapsDocument, {}),
+  //   setExecuteFn: testFn,
+  // });
+
+  const testFn = async () => {
+    subscribe(GetManySwapsDocument, {})
+      .then((result) => {
+        console.log(result);
+        result
+          .next()
+          .then((res) => {
+            console.log(res);
+            if (res) {
+              if (res.value) {
+                console.log(res.value);
+                setResult(res.value.data.swaps);
+              }
+            }
+            if (res.value.isLive) {
+              setTimeout(() => {
+                testFn();
+              }, 6000);
+            } else {
+              result.return();
+            }
+          })
+          .catch((e) => console.log(e));
+        if (!result) {
+          console.log(result);
+          console.log(">:(");
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   useEffect(() => {
-    execute(GetManySwapsDocument, {}).then((result) => {
-      setResult(result.data.swaps);
-      console.log(result.data);
-    });
+    // console.log(
+    //   onExecute({
+    //     args: { document: GetManySwapsDocument },
+    //     executeFn: GetManySwapsQuery,
+    //     setExecuteFn: GetManyLiveSwaps,
+    //   })
+    // );
+    // console.log(GetManySwapsDocument);
+    // subscribe(GetManySwapsDocument, {})
+    //   .then((result) => {
+    //     const repeater = result;
+    //     console.log(result);
+    //     result
+    //       .next()
+    //       .then((res) => {
+    //         console.log(res);
+    //         if (res) {
+    //           if (res.value) {
+    //             console.log(res.value);
+    //             setResult(res.value.data.swaps);
+    //           }
+    //         }
+    //         // if (res.isLive) {
+    //         //   result.return();
+    //         // }
+    //       })
+    //       .catch((e) => console.log(e));
+    //     if (!result) {
+    //       console.log(result);
+    //       console.log(">:(");
+    //     }
+    //   })
+    //   .catch((error) => console.log(error));
   }, []);
+
+  const getLiveSwaps = () => {
+    execute(GetManySwapsDocument, {}).then((result) => {
+      console.log(result);
+      if (result.data && result.data.swaps) {
+        setResult(result.data.swaps);
+      } else {
+        console.log(result.data);
+        console.log(">:(");
+      }
+    });
+  };
 
   return (
     <div className="App">
@@ -29,6 +109,7 @@ function App() {
       </header>
       <main>
         <h1>The Graph Client Tutorial</h1>
+        <button onClick={testFn}>Get Swaps</button>
         <ENSForm domains={domains} setDomains={setDomains} />
         <div className="content-container">
           {domains.length > 0 && (
@@ -40,7 +121,7 @@ function App() {
               ))}
             </ul>
           )}
-          {result?.length > 0 && (
+          {result && result.length > 0 && (
             <table className="swaps-list">
               <thead>
                 <tr>

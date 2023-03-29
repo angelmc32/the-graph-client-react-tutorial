@@ -1,5 +1,5 @@
-query GetManySwaps {
-  swaps(orderBy: timestamp, first: 1000, orderDirection: desc) {
+query GetManySwaps @live {
+  swaps(orderBy: timestamp, first: 15, orderDirection: desc) {
     id
     amountUSD
     pair {
