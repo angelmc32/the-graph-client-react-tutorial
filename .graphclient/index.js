@@ -15,8 +15,8 @@ const baseDir = pathModule.join(pathModule.dirname(fileURLToPath(import.meta.url
 const importFn = (moduleId) => {
     const relativeModuleId = (pathModule.isAbsolute(moduleId) ? pathModule.relative(baseDir, moduleId) : moduleId).split('\\').join('/').replace(baseDir + '/', '');
     switch (relativeModuleId) {
-        case ".graphclient/sources/usdc/introspectionSchema.js":
-            return import("./sources/usdc/introspectionSchema.js");
+        case ".graphclient/sources/uniswapv2/introspectionSchema.js":
+            return import("./sources/uniswapv2/introspectionSchema.js");
         case ".graphclient/sources/ens/introspectionSchema.js":
             return import("./sources/ens/introspectionSchema.js");
         default:
@@ -47,7 +47,7 @@ export async function getMeshOptions() {
     const transforms = [];
     const additionalEnvelopPlugins = [];
     const ensTransforms = [];
-    const usdcTransforms = [];
+    const uniswapv2Transforms = [];
     const additionalTypeDefs = [];
     const ensHandler = new GraphqlHandler({
         name: "ens",
@@ -59,14 +59,14 @@ export async function getMeshOptions() {
         logger: logger.child("ens"),
         importFn,
     });
-    const usdcHandler = new GraphqlHandler({
-        name: "usdc",
-        config: { "endpoint": "https://api.thegraph.com/subgraphs/name/centrehq/usdc" },
+    const uniswapv2Handler = new GraphqlHandler({
+        name: "uniswapv2",
+        config: { "endpoint": "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2" },
         baseDir,
         cache,
         pubsub,
-        store: sourcesStore.child("usdc"),
-        logger: logger.child("usdc"),
+        store: sourcesStore.child("uniswapv2"),
+        logger: logger.child("uniswapv2"),
         importFn,
     });
     sources[0] = {
@@ -75,9 +75,9 @@ export async function getMeshOptions() {
         transforms: ensTransforms
     };
     sources[1] = {
-        name: 'usdc',
-        handler: usdcHandler,
-        transforms: usdcTransforms
+        name: 'uniswapv2',
+        handler: uniswapv2Handler,
+        transforms: uniswapv2Transforms
     };
     const additionalResolvers = [];
     const merger = new StitchingMerger({
@@ -116,6 +116,12 @@ export async function getMeshOptions() {
                         return printWithCache(GetDomainBySubdomainCountDocument);
                     },
                     location: 'GetDomainBySubdomainCountDocument.graphql'
+                }, {
+                    document: GetManySwapsDocument,
+                    get rawSDL() {
+                        return printWithCache(GetManySwapsDocument);
+                    },
+                    location: 'GetManySwapsDocument.graphql'
                 }
             ];
         },
@@ -190,6 +196,27 @@ export const GetDomainBySubdomainCountDocument = gql `
   }
 }
     `;
+export const GetManySwapsDocument = gql `
+    query GetManySwaps {
+  swaps(orderBy: timestamp, first: 1000, orderDirection: desc) {
+    id
+    amountUSD
+    pair {
+      token0 {
+        name
+        symbol
+      }
+      token0Price
+      token1 {
+        name
+        symbol
+      }
+      token1Price
+    }
+    timestamp
+  }
+}
+    `;
 export function getSdk(requester) {
     return {
         GetManyDomains(variables, options) {
@@ -200,6 +227,9 @@ export function getSdk(requester) {
         },
         GetDomainBySubdomainCount(variables, options) {
             return requester(GetDomainBySubdomainCountDocument, variables, options);
+        },
+        GetManySwaps(variables, options) {
+            return requester(GetManySwapsDocument, variables, options);
         }
     };
 }

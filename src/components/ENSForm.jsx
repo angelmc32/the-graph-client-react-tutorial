@@ -6,7 +6,7 @@ import {
   execute,
 } from "../../.graphclient/index";
 
-const ENSForm = ({ domains = [], setDomains = () => null }) => {
+const ENSForm = ({ setDomains = () => null }) => {
   const [labelName, setLabelName] = useState("");
   const [minSubdomains, setMinSubdomains] = useState(1);
   const [maxSubdomains, setMaxSubdomains] = useState(5);
