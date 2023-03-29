@@ -1,10 +1,4 @@
 import { useState } from "react";
-import {
-  GetManyDomainsDocument,
-  GetDomainByLabelNameDocument,
-  GetDomainBySubdomainCountDocument,
-  execute,
-} from "../../.graphclient/index";
 import logo from "../logo.svg";
 
 const ENSForm = () => {
@@ -15,36 +9,18 @@ const ENSForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const getManyDomains = (event) => {
-    setIsLoading(true);
     event.preventDefault();
-    execute(GetManyDomainsDocument, {}).then((result) => {
-      setDomains(result.data.domains);
-      setIsLoading(false);
-    });
+    // To do...
   };
 
   const getDomainsByLabelName = (event) => {
     event.preventDefault();
-    setIsLoading(true);
-    execute(GetDomainByLabelNameDocument, {
-      labelName: labelName,
-      name: `${labelName}.eth`,
-    }).then((result) => {
-      setDomains(result.data.domains);
-      setIsLoading(false);
-    });
+    // To do...
   };
 
   const getDomainsBySubdomainCount = (event) => {
     event.preventDefault();
-    setIsLoading(true);
-    execute(GetDomainBySubdomainCountDocument, {
-      min: parseInt(minSubdomains),
-      max: parseInt(maxSubdomains),
-    }).then((result) => {
-      setDomains(result.data.domains);
-      setIsLoading(false);
-    });
+    // To do...
   };
 
   return (
