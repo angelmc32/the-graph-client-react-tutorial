@@ -111,11 +111,11 @@ export async function getMeshOptions() {
                     },
                     location: 'GetDomainByLabelNameDocument.graphql'
                 }, {
-                    document: GetDomainWithSubdomainsDocument,
+                    document: GetDomainBySubdomainCountDocument,
                     get rawSDL() {
-                        return printWithCache(GetDomainWithSubdomainsDocument);
+                        return printWithCache(GetDomainBySubdomainCountDocument);
                     },
-                    location: 'GetDomainWithSubdomainsDocument.graphql'
+                    location: 'GetDomainBySubdomainCountDocument.graphql'
                 }
             ];
         },
@@ -159,8 +159,8 @@ export const GetManyDomainsDocument = gql `
 }
     `;
 export const GetDomainByLabelNameDocument = gql `
-    query GetDomainByLabelName($labelName: String!) {
-  domains(where: {labelName: $labelName, name: $labelName}) {
+    query GetDomainByLabelName($labelName: String!, $name: String!) {
+  domains(where: {labelName: $labelName, name: $name}) {
     name
     labelName
     subdomainCount
@@ -171,9 +171,9 @@ export const GetDomainByLabelNameDocument = gql `
   }
 }
     `;
-export const GetDomainWithSubdomainsDocument = gql `
-    query GetDomainWithSubdomains($min: Int!, $max: Int!) {
-  domains(where: {subdomainCount_lte: $min, subdomainCount_gt: $max}) {
+export const GetDomainBySubdomainCountDocument = gql `
+    query GetDomainBySubdomainCount($min: Int!, $max: Int!) {
+  domains(where: {subdomainCount_gte: $min, subdomainCount_lte: $max}) {
     name
     labelName
     subdomainCount
@@ -198,8 +198,8 @@ export function getSdk(requester) {
         GetDomainByLabelName(variables, options) {
             return requester(GetDomainByLabelNameDocument, variables, options);
         },
-        GetDomainWithSubdomains(variables, options) {
-            return requester(GetDomainWithSubdomainsDocument, variables, options);
+        GetDomainBySubdomainCount(variables, options) {
+            return requester(GetDomainBySubdomainCountDocument, variables, options);
         }
     };
 }

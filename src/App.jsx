@@ -23,6 +23,26 @@ function App() {
       <main>
         <h1>The Graph Client Tutorial</h1>
         <ENSForm domains={domains} setDomains={setDomains} />
+        <div className="content-container">
+          {domains.length > 0 && (
+            <ul className="domains-list">
+              {domains.map((domain) => (
+                <li className="domains-list-element" key={domain.id}>
+                  {domain.name}
+                </li>
+              ))}
+            </ul>
+          )}
+          {domains.length > 0 && (
+            <ul className="domains-list">
+              {domains.map((domain) => (
+                <li className="domains-list-element" key={domain.id}>
+                  {domain.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </main>
       <div className="content-container">
         {result?.data && (

@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { GetManyDomainsDocument, execute } from "../../.graphclient/index";
+import {
+  GetManyDomainsDocument,
+  GetDomainByLabelNameDocument,
+  GetDomainBySubdomainCountDocument,
+  execute,
+} from "../../.graphclient/index";
 
 const ENSForm = ({ domains = [], setDomains = () => null }) => {
   const [labelName, setLabelName] = useState("");
@@ -8,6 +13,25 @@ const ENSForm = ({ domains = [], setDomains = () => null }) => {
 
   const getManyDomains = () => {
     execute(GetManyDomainsDocument, {}).then((result) => {
+      setDomains(result.data.domains);
+    });
+  };
+
+  const getDomainsByLabelName = () => {
+    execute(GetDomainByLabelNameDocument, {
+      labelName: labelName,
+      name: `${labelName}.eth`,
+    }).then((result) => {
+      setDomains(result.data.domains);
+    });
+  };
+
+  const getDomainsBySubdomainCount = () => {
+    console.log(minSubdomains, maxSubdomains);
+    execute(GetDomainBySubdomainCountDocument, {
+      min: minSubdomains,
+      max: maxSubdomains,
+    }).then((result) => {
       setDomains(result.data.domains);
       console.log(result.data.domains);
     });
@@ -52,16 +76,9 @@ const ENSForm = ({ domains = [], setDomains = () => null }) => {
       </div>
       <div className="buttons-container">
         <button onClick={getManyDomains}>Query Many Domains</button>
-        <button>Query One Domain</button>
-        <button>Query Subdomains</button>
+        <button onClick={getDomainsByLabelName}>Query One Domain</button>
+        <button onClick={getDomainsBySubdomainCount}>Query Subdomains</button>
       </div>
-      {domains.length > 0 && (
-        <ul>
-          {domains.map((domain) => (
-            <li key={domain.id}>{domain.name}</li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };

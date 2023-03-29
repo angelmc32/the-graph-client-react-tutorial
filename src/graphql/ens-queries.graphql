@@ -7,8 +7,8 @@ query GetManyDomains {
   }
 }
 
-query GetDomainByLabelName($labelName: String!) {
-  domains(where: { labelName: $labelName, name: $labelName }) {
+query GetDomainByLabelName($labelName: String!, $name: String!) {
+  domains(where: { labelName: $labelName, name: $name }) {
     name
     labelName
     subdomainCount
@@ -19,8 +19,8 @@ query GetDomainByLabelName($labelName: String!) {
   }
 }
 
-query GetDomainWithSubdomains($min: Int!, $max: Int!) {
-  domains(where: { subdomainCount_lte: $min, subdomainCount_gt: $max }) {
+query GetDomainBySubdomainCount($min: Int!, $max: Int!) {
+  domains(where: { subdomainCount_gte: $min, subdomainCount_lte: $max }) {
     name
     labelName
     subdomainCount

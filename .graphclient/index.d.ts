@@ -4748,11 +4748,12 @@ export declare function getBuiltGraphSDK<TGlobalContext = any, TOperationContext
     }>, options?: TOperationContext): Promise<GetManyDomainsQuery>;
     GetDomainByLabelName(variables: Exact<{
         labelName: string;
+        name: string;
     }>, options?: TOperationContext): Promise<GetDomainByLabelNameQuery>;
-    GetDomainWithSubdomains(variables: Exact<{
+    GetDomainBySubdomainCount(variables: Exact<{
         min: number;
         max: number;
-    }>, options?: TOperationContext): Promise<GetDomainWithSubdomainsQuery>;
+    }>, options?: TOperationContext): Promise<GetDomainBySubdomainCountQuery>;
 };
 export type GetManyDomainsQueryVariables = Exact<{
     [key: string]: never;
@@ -4762,17 +4763,18 @@ export type GetManyDomainsQuery = {
 };
 export type GetDomainByLabelNameQueryVariables = Exact<{
     labelName: Scalars['String'];
+    name: Scalars['String'];
 }>;
 export type GetDomainByLabelNameQuery = {
     domains: Array<(Pick<Domain, 'name' | 'labelName' | 'subdomainCount' | 'id'> & {
         owner: Pick<Account, 'id'>;
     })>;
 };
-export type GetDomainWithSubdomainsQueryVariables = Exact<{
+export type GetDomainBySubdomainCountQueryVariables = Exact<{
     min: Scalars['Int'];
     max: Scalars['Int'];
 }>;
-export type GetDomainWithSubdomainsQuery = {
+export type GetDomainBySubdomainCountQuery = {
     domains: Array<(Pick<Domain, 'name' | 'labelName' | 'subdomainCount' | 'id'> & {
         subdomains: Array<Pick<Domain, 'labelName'>>;
         owner: Pick<Account, 'id'>;
@@ -4784,8 +4786,9 @@ export declare const GetManyDomainsDocument: DocumentNode<GetManyDomainsQuery, E
 }>>;
 export declare const GetDomainByLabelNameDocument: DocumentNode<GetDomainByLabelNameQuery, Exact<{
     labelName: Scalars['String'];
+    name: Scalars['String'];
 }>>;
-export declare const GetDomainWithSubdomainsDocument: DocumentNode<GetDomainWithSubdomainsQuery, Exact<{
+export declare const GetDomainBySubdomainCountDocument: DocumentNode<GetDomainBySubdomainCountQuery, Exact<{
     min: Scalars['Int'];
     max: Scalars['Int'];
 }>>;
@@ -4793,6 +4796,6 @@ export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V,
 export declare function getSdk<C, E>(requester: Requester<C, E>): {
     GetManyDomains(variables?: GetManyDomainsQueryVariables, options?: C): Promise<GetManyDomainsQuery>;
     GetDomainByLabelName(variables: GetDomainByLabelNameQueryVariables, options?: C): Promise<GetDomainByLabelNameQuery>;
-    GetDomainWithSubdomains(variables: GetDomainWithSubdomainsQueryVariables, options?: C): Promise<GetDomainWithSubdomainsQuery>;
+    GetDomainBySubdomainCount(variables: GetDomainBySubdomainCountQueryVariables, options?: C): Promise<GetDomainBySubdomainCountQuery>;
 };
 export type Sdk = ReturnType<typeof getSdk>;
