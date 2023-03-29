@@ -1,13 +1,11 @@
-const SwapsTable = ({ isLoading = false, swaps = [] }) => {
-  if (isLoading) {
-    return (
+const SwapsComponent = ({ isLoading = false, swaps = [] }) => (
+  <div className="table-container">
+    {isLoading ? (
       <div className="loader-container">
         <div className="loader" />
         Loading...
       </div>
-    );
-  } else {
-    return (
+    ) : (
       <table className="table-swaps">
         <thead>
           <tr>
@@ -29,8 +27,8 @@ const SwapsTable = ({ isLoading = false, swaps = [] }) => {
             ))}
         </tbody>
       </table>
-    );
-  }
-};
+    )}
+  </div>
+);
 
-export default SwapsTable;
+export default SwapsComponent;

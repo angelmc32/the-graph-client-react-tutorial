@@ -41,7 +41,6 @@ const ENSForm = () => {
       min: parseInt(minSubdomains),
       max: parseInt(maxSubdomains),
     }).then((result) => {
-      console.log(result);
       setDomains(result.data.domains);
       setIsLoading(false);
     });

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { GetManySwapsDocument, subscribe } from "../.graphclient/index";
 import "./App.css";
 import Navbar from "./components/Navbar";
-import ENSForm from "./components/ENSForm";
-import SwapsTable from "./components/SwapsTable";
+import ENSComponent from "./components/ENSComponent";
+import SwapsComponent from "./components/SwapsComponent";
 
 function App() {
   const [swaps, setSwaps] = useState([]);
@@ -14,13 +14,17 @@ function App() {
     setIsLoading(true);
     subscribe(GetManySwapsDocument, {})
       .then((result) => {
-        console.log(result);
         result
           .next()
           .then((res) => {
             if (res) {
               if (res.value) {
-                console.log(res.value);
+                // Leaving this to show live query on demo
+                console.log(
+                  ` Last registered swap value: $ ${parseFloat(
+                    res.value.data.swaps[0].amountUSD
+                  ).toFixed(2)}`
+                );
                 setSwaps(res.value.data.swaps);
               }
             }
@@ -73,11 +77,9 @@ function App() {
           </button>
         </div>
         <hr className="divider" />
-        {showTab === "ens-query" && <ENSForm />}
+        {showTab === "ens-query" && <ENSComponent />}
         {showTab === "dex-query" && (
-          <div className="table-container">
-            <SwapsTable isLoading={isLoading} swaps={swaps} />
-          </div>
+          <SwapsComponent isLoading={isLoading} swaps={swaps} />
         )}
       </main>
     </div>
