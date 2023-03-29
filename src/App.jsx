@@ -1,16 +1,11 @@
 import { useState } from "react";
-import {
-  GetManySwapsDocument,
-  execute,
-  subscribe,
-} from "../.graphclient/index";
+import { GetManySwapsDocument, subscribe } from "../.graphclient/index";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import ENSForm from "./components/ENSForm";
 import SwapsTable from "./components/SwapsTable";
 
 function App() {
-  const [domains, setDomains] = useState([]);
   const [swaps, setSwaps] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showTab, setShowTab] = useState("ens-query");
@@ -78,22 +73,7 @@ function App() {
           </button>
         </div>
         <hr className="divider" />
-        {showTab === "ens-query" && (
-          <>
-            <ENSForm domains={domains} setDomains={setDomains} />
-            <div className="content-container">
-              {domains.length > 0 && (
-                <ul className="domains-list">
-                  {domains.map((domain) => (
-                    <li className="domains-list-element" key={domain.id}>
-                      {domain.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </>
-        )}
+        {showTab === "ens-query" && <ENSForm />}
         {showTab === "dex-query" && (
           <div className="table-container">
             <SwapsTable isLoading={isLoading} swaps={swaps} />

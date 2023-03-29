@@ -172,6 +172,9 @@ export const GetManyDomainsDocument = gql `
     name
     labelName
     labelhash
+    owner {
+      id
+    }
   }
 }
     `;

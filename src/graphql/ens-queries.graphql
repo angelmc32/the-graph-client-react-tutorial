@@ -4,6 +4,9 @@ query GetManyDomains {
     name
     labelName
     labelhash
+    owner {
+      id
+    }
   }
 }
 

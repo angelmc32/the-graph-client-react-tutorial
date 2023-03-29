@@ -6885,7 +6885,9 @@ export type GetManyDomainsQueryVariables = Exact<{
     [key: string]: never;
 }>;
 export type GetManyDomainsQuery = {
-    domains: Array<Pick<Domain, 'id' | 'name' | 'labelName' | 'labelhash'>>;
+    domains: Array<(Pick<Domain, 'id' | 'name' | 'labelName' | 'labelhash'> & {
+        owner: Pick<Account, 'id'>;
+    })>;
 };
 export type GetDomainByLabelNameQueryVariables = Exact<{
     labelName: Scalars['String'];

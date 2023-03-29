@@ -1,10 +1,9 @@
 const SwapsTable = ({ isLoading = false, swaps = [] }) => {
-  console.log(isLoading);
   if (isLoading) {
     return (
       <div className="loader-container">
-        {" "}
         <div className="loader" />
+        Loading...
       </div>
     );
   } else {
