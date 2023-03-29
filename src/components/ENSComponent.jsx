@@ -5,6 +5,7 @@ import {
   GetDomainBySubdomainCountDocument,
   execute,
 } from "../../.graphclient/index";
+import logo from "../logo.svg";
 
 const ENSForm = () => {
   const [domains, setDomains] = useState([]);
@@ -99,7 +100,7 @@ const ENSForm = () => {
       <div className="list-container">
         {isLoading && (
           <div className="loader-container">
-            <div className="loader" />
+            <img className="loader" src={logo} />
             Loading...
           </div>
         )}
