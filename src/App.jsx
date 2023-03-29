@@ -12,9 +12,11 @@ import SwapsTable from "./components/SwapsTable";
 function App() {
   const [domains, setDomains] = useState([]);
   const [swaps, setSwaps] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [showTab, setShowTab] = useState("ens-query");
 
   const subscribeLiveQuery = async () => {
+    setIsLoading(true);
     subscribe(GetManySwapsDocument, {})
       .then((result) => {
         console.log(result);
@@ -39,8 +41,12 @@ function App() {
         if (!result) {
           return null;
         }
+        setIsLoading(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
   };
 
   const showComponent = async (component = "ens-query") => {
@@ -90,7 +96,7 @@ function App() {
         )}
         {showTab === "dex-query" && (
           <div className="table-container">
-            <SwapsTable swaps={swaps} />
+            <SwapsTable isLoading={isLoading} swaps={swaps} />
           </div>
         )}
       </main>
