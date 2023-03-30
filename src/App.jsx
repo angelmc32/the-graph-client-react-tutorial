@@ -4,7 +4,8 @@ import Navbar from "./components/Navbar";
 import ENSComponent from "./components/ENSComponent";
 import SwapsComponent from "./components/SwapsComponent";
 
-function App() {
+const App = () => {
+  const [swaps, setSwaps] = useState([]);
   const [showTab, setShowTab] = useState("ens-query");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,10 +40,12 @@ function App() {
         </div>
         <hr className="divider" />
         {showTab === "ens-query" && <ENSComponent />}
-        {showTab === "dex-query" && <SwapsComponent isLoading={isLoading} />}
+        {showTab === "dex-query" && (
+          <SwapsComponent isLoading={isLoading} swaps={swaps} />
+        )}
       </main>
     </div>
   );
-}
+};
 
 export default App;

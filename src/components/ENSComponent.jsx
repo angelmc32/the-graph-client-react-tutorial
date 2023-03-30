@@ -1,7 +1,7 @@
 import { useState } from "react";
 import logo from "../logo.svg";
 
-const ENSForm = () => {
+const ENSComponent = () => {
   const [domains, setDomains] = useState([]);
   const [labelName, setLabelName] = useState("");
   const [minSubdomains, setMinSubdomains] = useState(1);
@@ -100,4 +100,4 @@ const ENSForm = () => {
   );
 };
 
-export default ENSForm;
+export default ENSComponent;
