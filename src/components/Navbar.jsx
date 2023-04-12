@@ -16,7 +16,7 @@ const Navbar = () => {
       <div className="links-container">
         <a
           className="link-element"
-          href="https://thegraph.com/docs/"
+          href="https://thegraph.com/docs/en/about/"
           target="_blank"
           rel="noopener noreferrer"
         >
